@@ -11,3 +11,4 @@ Honeybee hive population prototype. Referring to the semester's project from an 
 * 10309159 - William Zaniboni Silva
 
 ## Hive model:
+![hive model](https://github.com/pedro-oli/HoneybeeEvolutionary/blob/master/hive_model.png?raw=true)
