@@ -6,9 +6,8 @@ Honeybee hive population prototype. Referring to the semester's project from an 
 * 10309159 - William Zaniboni Silva
 
 ## Python dependencies (install before running):
-> matplotlib
-
-> numpy
+> [matplotlib](https://matplotlib.org/3.1.1/users/installing.html) <br/>
+> [numpy](https://numpy.org/install/)
 
 ## Hive model:
 ![hive model](https://github.com/pedro-oli/HoneybeeEvolutionary/blob/master/hive_model.png?raw=true)
