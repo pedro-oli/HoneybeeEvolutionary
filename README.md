@@ -11,3 +11,7 @@ Honeybee hive population prototype. Referring to the semester's project from an 
 
 ## Hive model:
 ![hive model](https://github.com/pedro-oli/HoneybeeEvolutionary/blob/master/hive_model.png?raw=true)
+
+## How to run:
+> python auxiliar.py
+
