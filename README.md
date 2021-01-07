@@ -4,6 +4,7 @@ Honeybee hive population prototype. Referring to the semester's project from an 
 ## Grupo:
 * 8922006 - Pedro Henrique Siqueira de Oliveira
 * 10309159 - William Zaniboni Silva
+* [Vídeo da apresentação](https://drive.google.com/file/d/1GIPIdF3cM-0RyuIbSJMOaQHzKJT3IYQI/view?usp=sharing)
 
 ## Python dependencies (install before running):
 > [matplotlib](https://matplotlib.org/3.1.1/users/installing.html) <br/>
