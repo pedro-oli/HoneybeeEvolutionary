@@ -106,7 +106,7 @@ def randomPredation(worstHivepop): #Troca o pior individuo por um aleatorio
     population.remove(worstHivepop) #Exclui o pior individuo
 
     gene_mutationProbability = randint(1, 500) / 10000 #Sorteia os genes do algoritmo original
-    gene_numberOfHives = randint(2, 50)
+    gene_numberOfHives = randint(1, 50)
     gene_genocide_interval = randint(1, 30)
     gene_random_predation_interval =  randint(1, 20)
 
@@ -228,7 +228,7 @@ if __name__ == '__main__':
     for _ in range(numberofPopulation): #Inicia a populacao
 
         gene_mutationProbability = randint(1, 500) / 10000 #Sorteia os genes do algoritmo original
-        gene_numberOfHives = randint(1, 50)
+        gene_numberOfHives = randint(2, 50)
         gene_genocide_interval = randint(1, 30)
         gene_random_predation_interval =  randint(1, 20)
 

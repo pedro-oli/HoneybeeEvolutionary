@@ -10,6 +10,9 @@ from matplotlib.patches import RegularPolygon
 # Algorithm's Individuals
 population = []
 
+arquivo = open("plots.txt", "w")
+
+
 # Hive model:
 #               __
 #            __/  \__
@@ -134,6 +137,7 @@ class Hive(object):
                 break
 
         # Fitness = final number of bees / initial number of bees
+       # print(str(len(self.getBees())) + "/" + str(howManyInitialBees))
         return len(set(self.getBees())) / howManyInitialBees
 # END of class Hive
 
@@ -170,7 +174,7 @@ def getAveragePopulationFitness():
     return average/populationsize
 
 # Draws the best Hive and a scatter plot of best fitness by generation
-def drawchart(x,y,average, the_worst_fitness, bestHive, ax):
+def drawchart(x,y,average, the_worst_fitness, bestHive):
     plt.figure(1)
     plt.scatter(x,y, s = 10, color = 'red', label="The best")
     plt.scatter(x,average, s = 10, color = 'blue', label="Average")
@@ -205,6 +209,8 @@ def drawchart(x,y,average, the_worst_fitness, bestHive, ax):
     ax.scatter(hcoord, vcoord, c = 'white', alpha=0)
 
     final_bees = bestHive.getFinalBees()
+    #print("No draw: quantidade final: " + str(len(bestHive.getFinalBees())))
+    #print(final_bees)
     hcoord3 = [c3[0] for c3 in final_bees]
     vcoord3 = [2. * np.sin(np.radians(60)) * (c3[1] - c3[2]) /3. for c3 in final_bees]
     ax.set_aspect('equal')
@@ -219,6 +225,9 @@ def drawchart(x,y,average, the_worst_fitness, bestHive, ax):
 
     # Draws the best
     the_best_cromossom = bestHive.getBees()
+    #print("No draw: quantidade inicial: " + str(len(bestHive.getBees())))
+    #print(the_best_cromossom)
+
     hcoord2 = [c2[0] for c2 in the_best_cromossom]
     vcoord2 = [2. * np.sin(np.radians(60)) * (c2[1] - c2[2]) /3. for c2 in the_best_cromossom]
     ax.set_aspect('equal')
@@ -280,7 +289,7 @@ def elitism(bestHive):
 def mutate(bestHive, mutationProbability):
     global population
 
-    # Logica da mutacao: Ela eh dividida em duas partes
+    #Descricao da mutacao: Ela eh dividida em duas partes
     # A primeira parte da mutacao ocorre em toda geracao: todo individuo da populacao (menos o melhor de todos) tem um de seus genes trocado por um aleatorio.
     # A segunda parte da mutacao ocorre de forma aleatoria (depende do valor do mutationProbability): caso essa parte da mutacao ocorra ...
     # ... eh sorteado um numero entre 0 e a menor quantidade de abelhas  de um individuo da populacao. Esse valor sorteado sera a quantidade ...
@@ -318,7 +327,7 @@ def mutate(bestHive, mutationProbability):
     #Segunda parte da mutacao
     if(mutationProbability>random()):
         lowercromossomsize = 100000000000 
-        print("Segunda parte da mutaçao - Probabilidade de ", mutationProbability)
+        #print("Segunda parte da mutaçao - Probabilidade de ", mutationProbability)
 
         for hive in population: #calcula qual a menor quantidade de genes de um individuo da populacao
             if(len(hive.getBees()) < lowercromossomsize): 
@@ -357,7 +366,7 @@ def mutate(bestHive, mutationProbability):
 def genocide(bestHive):
     global population
 
-    print("DEBUG: GENOCIDIO")
+    #print("DEBUG: GENOCIDIO")
     counter = len(population)-1
     new_population = []
 
@@ -391,7 +400,7 @@ def genocide(bestHive):
 def randomPredation(worstHive): #Troca o pior individuo por um aleatorio
     global population
 
-    print("PREDACAO RANDOMICA")
+    #print("PREDACAO RANDOMICA")
     population.remove(worstHive) #Exclui o pior individuo
 
     newHive = Hive() #Cria um novo individuo
@@ -444,18 +453,13 @@ def sintesePredation(worstHive):
                 newHive.bees.append((newX, newY, newZ))
     population.append(newHive) 
 
-def main(mutationProbability2, numberOfHives2, genocide_interval2, random_predation_interval2):
-
-    global population
-
-    population = []
-
-    mutationProbability = mutationProbability2 	# Probability that ANY mutation happens
-    numberOfHives = numberOfHives2  		    # Number of Hives per Individual
-    genocide_interval = genocide_interval2          # Minimum number of generations before running genocide
-    random_predation_interval = random_predation_interval2  # Minimum number of generations before running random predation
-
+if __name__ == "__main__":
+    mutationProbability = 0.024 	# Probability that ANY mutation happens
     generation = 0		    		# Generation counter
+    numberOfHives = 29  		    # Number of Hives per Individual
+    genocide_interval = 9          # Minimum number of generations before running genocide
+    random_predation_interval = 7  # Interval of generations between two random predations
+
     # Generates initial Individuals (population)
     for _ in range(numberOfHives):
         newHive = Hive()
@@ -481,6 +485,28 @@ def main(mutationProbability2, numberOfHives2, genocide_interval2, random_predat
         # Adds new Hive to the algorithm's Population
         population.append(newHive)
 
+    # Print initial population
+    print("Population:")
+    for index, hive in enumerate(population):
+        print("\tHive", index, "=", hive)
+
+    # Initializes the chart
+    plt.ion() 
+    fig = plt.figure(1)
+    plt.axis([-0.5,100,-1,7])
+    plt.xlabel("Generation")
+    plt.ylabel("Fitness")
+    plt.scatter(-1000,-1000, s = 10, color = 'red', label = "The best")
+    plt.scatter(-1000,-1000, s = 10, color = 'blue', label = "Average")
+    plt.scatter(-1000,-1000, s = 10, color = 'green', label = "The worst") 
+
+
+    arquivo.write('Generation The_best Average The_worst\n')
+ 
+    plt.legend()
+    fig2, (ax) = plt.subplots(ncols=1, figsize=(5,5))
+    ax.set_title("The best")
+
     # List with the best fitness
     the_best_fitness_list = []
 
@@ -488,13 +514,69 @@ def main(mutationProbability2, numberOfHives2, genocide_interval2, random_predat
     genocide_counter = 0 # Aux counter for running a new genocide
     random_predation_counter = 0 # Aux counter for running a new random predation
 
+    auxiliar_the_best = 0
+
     # Main Loop
     print("Type 'n' for next generation, 'a' to automatic solve problem, or 'q' to quit:")
-    command = "a"
+    command = ""
     while command != "q":
+        command = input()
+
+        # Manual Loop
+        if command == "n":
+            # Gets best and the worst Individual
+            bestHive = getBestIndividual()
+            worstHive = getWorstIndividual()
+
+            # Draws a chart of Best fitnesses x generation
+            the_best_fitness = copy.deepcopy(bestHive).getFitness()
+            print("THE BEST FITNESS: " + str(the_best_fitness))
+            the_worst_fitness = copy.deepcopy(worstHive).getFitness()
+
+            the_best_fitness_list.append(the_best_fitness)
+            drawchart(generation, the_best_fitness, getAveragePopulationFitness(), the_worst_fitness,  copy.deepcopy(bestHive))
+
+            # If reached the random predation interval, runs random predation
+            if(random_predation_counter > random_predation_interval):
+                #print("Predacao randomica")
+                randomPredation(worstHive)
+                random_predation_counter = 0
+            # If not, runs the synthesis predation
+            else:
+                sintesePredation(worstHive)
+                #print("ERA SINTESE")
+
+            # Crosses best Hive with all others (Elitism)
+            elitism(bestHive)
+
+            # If reached the genocide interval AND the best fitness hasn't improved in the last 20 generations,
+            # runs a genocide
+            if(genocide_counter > genocide_interval and the_best_fitness_list[len(the_best_fitness_list)-1] == the_best_fitness_list[len(the_best_fitness_list)-21]):
+                    genocide(bestHive)
+                    change_mutation = 0
+                    genocide_counter = 0
+                    mutationProbability = 0.005
+
+            # If the mutation probability hasn't changed for 5 generations
+            # AND the best fitness hasn't improved, doubles the mutationProbability
+            if(change_mutation > 5 and the_best_fitness_list[len(the_best_fitness_list)-1] == the_best_fitness_list[len(the_best_fitness_list)-11]):
+                mutationProbability = mutationProbability * 2
+                # Checks if the probability is more than 100%, and sets it to 100%
+                if(mutationProbability > 1):
+                    mutationProbability = 1
+                change_mutation = 0
+
+            # Mutates population (except for the best Hive)
+            mutate(bestHive, mutationProbability)
+
+            # Increments counters
+            generation += 1
+            change_mutation += 1
+            genocide_counter += 1
+            random_predation_counter += 1
 
         # Automatic Loop
-        if command == "a":
+        elif command == "a":
             unsolved = True
             while unsolved:
                 # If the best fitness stays the same for 50 generations, end program
@@ -508,14 +590,29 @@ def main(mutationProbability2, numberOfHives2, genocide_interval2, random_predat
 
                 # Draws a chart of Best fitnesses x generation
                 the_best_fitness = copy.deepcopy(bestHive).getFitness()
+                print("THE BEST FITNESS: " + str(the_best_fitness))
                 the_worst_fitness = copy.deepcopy(worstHive).getFitness()
 
                 the_best_fitness_list.append(the_best_fitness)
-               
-                print(generation)
+
+                #Caso queira salvar no o maximo global ...
                 
+               # if(the_best_fitness > 6.3):
+                   # auxiliar_the_best = auxiliar_the_best + 1
+                   # drawchart(generation, the_best_fitness, getAveragePopulationFitness(), the_worst_fitness,  copy.deepcopy(bestHive))
+                    #if(auxiliar_the_best>5):
+                       # plt.savefig('fitness-geration'+ str(generation) +'.png')
+                       # break
+
+                drawchart(generation, the_best_fitness, getAveragePopulationFitness(), the_worst_fitness,  copy.deepcopy(bestHive))
+
+                print(generation)
+                arquivo.write(str(generation)+" "+ str(the_best_fitness)+" "+str(getAveragePopulationFitness())+" "+str(the_worst_fitness)+"\n")
+
+
                 # If reached the random predation interval, runs random predation
                 if(random_predation_counter > random_predation_interval):
+                    print("Predação randômica")
                     randomPredation(worstHive)
                     random_predation_counter = 0
                 # If not, runs the synthesis predation
@@ -527,15 +624,16 @@ def main(mutationProbability2, numberOfHives2, genocide_interval2, random_predat
 
                 # If reached the genocide interval AND the best fitness hasn't improved in the last 20 generations,
                 # runs a genocide
-                if(genocide_counter > genocide_interval and (len(the_best_fitness_list)-21)>0  and  the_best_fitness_list[len(the_best_fitness_list)-1] == the_best_fitness_list[len(the_best_fitness_list)-21]):
+                if(genocide_counter > genocide_interval and the_best_fitness_list[len(the_best_fitness_list)-1] == the_best_fitness_list[len(the_best_fitness_list)-21]):
+                    print("Genocídio")
                     genocide(bestHive)
                     change_mutation = 0
                     genocide_counter = 0
-                    mutationProbability = mutationProbability2
+                    mutationProbability = 0.005
 
                 # If the mutation probability hasn't changed for 5 generations
                 # AND the best fitness hasn't improved, doubles the mutationProbability
-                if(change_mutation>5 and (len(the_best_fitness_list)-11)>0 and the_best_fitness_list[len(the_best_fitness_list)-1] == the_best_fitness_list[len(the_best_fitness_list)-11]):
+                if(change_mutation>5 and the_best_fitness_list[len(the_best_fitness_list)-1] == the_best_fitness_list[len(the_best_fitness_list)-11]):
                     mutationProbability = mutationProbability * 2
                     # Checks if the probability is more than 100%, and sets it to 100%
                     if(mutationProbability > 1):
@@ -554,7 +652,5 @@ def main(mutationProbability2, numberOfHives2, genocide_interval2, random_predat
             break
     # END of while command != "q"
 
-    population = []
-
-    return the_best_fitness
-
+    arquivo.close()
+    exit()
