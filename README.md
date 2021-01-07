@@ -9,9 +9,11 @@ Honeybee hive population prototype. Referring to the semester's project from an 
 > [matplotlib](https://matplotlib.org/3.1.1/users/installing.html) <br/>
 > [numpy](https://numpy.org/install/)
 
-## Hive model:
-![hive model](https://github.com/pedro-oli/HoneybeeEvolutionary/blob/master/hive_model.png?raw=true)
-
 ## How to run:
 > python auxiliar.py
 
+## Hive model:
+![hive model](https://github.com/pedro-oli/HoneybeeEvolutionary/blob/master/hive_model.png?raw=true)
+
+## Results:
+![results](https://github.com/pedro-oli/HoneybeeEvolutionary/blob/master/resultados.jpg?raw=true)
